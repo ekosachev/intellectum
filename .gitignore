@@ -5,3 +5,4 @@ intellectum_app/migrations
 intellectum_website/__pycache__
 .env
 .idea
+.termdbms

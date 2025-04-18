@@ -53,6 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "intellectum_website.urls"
+LOGIN_REDIRECT_URL = "home"
 
 TEMPLATES = [
     {
