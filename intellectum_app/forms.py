@@ -23,10 +23,12 @@ class RegistrationForm(UserCreationForm):
             "first_name",
             "last_name",
             "email",
+            "username",
         )
         labels = {
             "first_name": "Имя",
             "last_name": "Фамилия",
+            "username": "Логин (используется для входа на сайт)",
             "email": "E-mail",
         }
         help_texts = {
