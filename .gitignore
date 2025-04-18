@@ -4,3 +4,4 @@ intellectum_app/__pycache__
 intellectum_app/migrations
 intellectum_website/__pycache__
 .env
+.idea
