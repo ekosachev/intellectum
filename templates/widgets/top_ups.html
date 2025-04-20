@@ -1,0 +1,18 @@
+<div class="container">
+  <table class="table is-fullwidth is-hoverable">
+    <thead>
+      <th>Покупка</th>
+      <th>Сумма</th>
+      <th>Дата оплаты</th>
+    </thead>
+    <tbody>
+      {% for top_up in top_ups %}
+      <tr>
+        <td>{{top_up.reason.0}}</td>
+        <td>{{top_up.amount.0}} руб.</td>
+        <td>{{top_up.payment_date|date:"d/m/y"}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

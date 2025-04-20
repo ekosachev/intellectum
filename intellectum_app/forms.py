@@ -48,3 +48,7 @@ class RegistrationForm(UserCreationForm):
 class SigninForm(forms.Form):
     username = forms.CharField(label="Логин")
     password = forms.CharField(widget=forms.PasswordInput, label="Пароль")
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+    id = forms.HiddenInput()

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="level">
+  <div class="level-left">
+    <p class="title is-3">Домашние задания</p>
+  </div>
+  <div class="level-left">
+    <a class="button is-dark" href="{% url 'home' %}">На главную</a>
+  </div>
+</div>
+{% for assignment in assignments %}
+<div class="box">
+  <div class="level">
+    <div class="level-left">
+      <div class="container">
+        <p class="title is-4">
+          {{assignment.name}}
+          {% if assignment.is_submitted %}
+            {% if assignment.is_reviewed %}
+              <span class="tag is-success"> Оценено </span>
+            {% else %}
+              <span class="tag is-warning"> Ожидает оценки </span>
+            {% endif %}
+          {% else %}
+              <span class="tag is-danger"> Нужно выполнить </span>
+          {% endif %}
+        </p>
+        <p class="subtitle">{{assignment.subject.0}}</p>
+      </div>
+    </div>
+    <div class="level-left">
+      <p>Сдать до: {{assignment.deadline|date:"d/m"}}</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <p class="title is-5">Текст задания</p>
+    {% for block in assignment.text %}
+    
+      <p class="content">{{block}}</p>
+    {% endfor %}
+  </div>
+
+  <div class="block">
+    <p class="title is-5">Файлы к заданию</p>
+    <div class="grid">
+      {% for attachment in assignment.attachments %}
+      <div class="cell box">
+        <p class="has-text-weight-bold">{{attachment.name}}</p>
+        <a class="button is-link is-dark" href="https://true.tabs.sale{{attachment.url}}">Скачать</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% if not assignment.is_submitted %}
+    <div class="block">
+      <p class="title is-5">Загрузить решение</p>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{assignment.id}}">
+        <div class="file has-name">
+          <label class="file-label">
+            <input class="file-input" type="file" name="file" />
+            <span class="file-cta">
+              <span class="file-label"> Выберите файл с решением </span>
+            </span>
+            <span class="file-name"> Название файла </span>
+          </label>
+        </div>
+        <input type="submit" class="button is-primary is-dark" value="Отправить">
+      </form>
+    </div>
+  {% else %}
+    {% if not assignment.is_reviewed %}
+      <p class="title is-5">Решение ожидает оценки преподавателем</p>
+    {% else %}
+      <div class="container">
+        <div class="level">
+          <div class="level-left">
+            <p class="title is-5">Решение оценено</p>
+          </div>
+          <div class="level-right">
+            <p class="title is-5">{{assignment.mark}} / 5</p>
+          </div>
+        </div>
+        {% if assignment.mark >= 4 %}
+          <progress class="progress is-success" value="{{assignment.mark}}" max="5">
+            {{assignment.mark}}
+          </progress>
+        {% else %}
+          {% if assignment.mark >= 3 %}
+            <progress class="progress is-warning" value="{{assignment.mark}}" max="5">
+              {{assignment.mark}}
+            </progress>
+          {% else %}
+            <progress class="progress is-danger" value="{{assignment.mark}}" max="5">
+              {{assignment.mark}}
+            </progress>
+          {% endif %}
+        {% endif %}
+        <div class="container">
+          <p class="title is-5">Комментарий преподавателя</p>
+          {% for block in assignment.review %}
+            <p class="content">{{block}}</p>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+  
+</div>
+{% endfor %}
+{% endblock body %}

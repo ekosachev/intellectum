@@ -4,32 +4,13 @@
   <div class="fixed-grid has-6-cols">
     <div class="grid">
       <div class="cell is-row-span-2 is-col-span-3 box">
-        <div class="level">
-          <div class="level-left">
-            <div class="container">
-              <p class="title is-3">{{user.last_name}}</p>
-              <p class="subtitle is-5">{{user.first_name}}</p>
-            </div>
-          </div>
-          <div class="level-right">
-            <a href="" class="button is-danger is-dark">Выйти</a>
-          </div>
-        </div>
+        <div class="skeleton-block" hx-get="/widget/profile" hx-trigger="load" hx-swap="outerHTML"></div>
       </div>
       <div class="cell is-row-span-2 is-col-span-3 box">
-          <p class="title is-3">
-            Предстоящие занятия
-          </p>
-          <div class="container">
-            <ul>
-              {% for lesson in lessons %}
-                <li>
-                  <span class="has-text-weight-bold has-text-primary">{{lesson.name}} - {{lesson.timestamp}}</span>
-                  <span>(Преподаватель: {{lesson.teacher.0}})</span>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
+        <p class="title is-3">
+          Предстоящие занятия
+        </p>
+        <div class="skeleton-block" hx-get="/widget/upcoming_lessons" hx-trigger="load" hx-swap="outerHTML"></div>
       </div>
       <div class="cell box is-col-span-4">
         <div class="level">
@@ -40,40 +21,7 @@
             <a class="button is-primary is-dark" href="{% url 'courses' %}">Каталог курсов</a>
           </div>
         </div>
-        <div class="level">
-          <div class="level-item has-text-centered">
-            <div>
-              <p class="heading">Занятий осталось</p>
-              <p class="title">
-                {{remainders.lessons}}
-              </p>
-            </div>
-          </div>
-          <div class="level-item has-text-centered">
-            <div>
-              <p class="heading">Предстоящих вебинаров</p>
-              <p class="title">{{remainders.webinars}}</p>
-            </div>
-          </div>
-        </div>
-        <div class="container">
-          <table class="table is-fullwidth is-hoverable">
-            <thead>
-              <th>Пакет</th>
-              <th>Предмет</th>
-              <th>Преподаватель</th>
-              <th>Занятия</th>
-            </thead>
-            {% for course in my_courses %}
-              <tr>
-                <td>{{course.name.0}}</td>
-                <td>{{course.subject.0}}</td>
-                <td>{{course.teacher.0}}</td>
-                <td>{{course.lessons_left}}/{{course.lessons_total.0}}</td>
-              </tr>
-            {% endfor %}
-          </table>
-        </div>
+        <div class="skeleton-block" hx-get="/widget/my_courses" hx-trigger="load" hx-swap="outerHTML"></div>
       </div>
       <div class="cell box is-col-span-2 ">
         <div class="level">
@@ -84,29 +32,15 @@
             <a class="button is-info is-dark">Пополнить счет</a>
           </div>
         </div>
-        <div class="container">
-          <table class="table is-fullwidth is-hoverable">
-            <thead>
-              <th>Покупка</th>
-              <th>Сумма</th>
-              <th>Дата оплаты</th>
-            </thead>
-            <tbody>
-              {% for top_up in top_ups %}
-                <tr>
-                  <td>{{top_up.reason.0}}</td>
-                  <td>{{top_up.amount.0}} руб.</td>
-                  <td>{{top_up.payment_date|date:"d/m/y"}}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+        <div class="skeleton-block" hx-get="/widget/top_ups" hx-trigger="load" hx-swap="outerHTML"></div>
       </div>
       <div class="cell box is-row-span-2 is-col-span-3">
         <div class="level">
           <div class="level-left">
             <p class="title is-5">Домашние задания</p>
+          </div>
+          <div class="level-right">
+            <a class="button is-dark" href="{% url 'assignments' %}">Перейти к заданиям</a>
           </div>
         </div>
         <div class="container">
@@ -114,6 +48,15 @@
             <div class="level">
               <div class="level-left has-text-primary">
                 {{homework.name}} ({{homework.subject.0}})
+                {% if homework.is_submitted %}
+                  {% if homework.is_reviewed %}
+                    <span class="tag is-success "> Оценено </span>
+                  {% else %}
+                    <span class="tag is-warning "> Ожидает оценки </span>
+                  {% endif %}
+                {% else %}
+                    <span class="tag is-danger "> Нужно выполнить </span>
+                {% endif %}
               </div>
               <div class="level-right">
                 сдать до {{homework.deadline|date:"d/m"}}

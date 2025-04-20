@@ -5,40 +5,20 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login
 
 from intellectum_app import schemas
-from intellectum_app.forms import RegistrationForm
+from intellectum_app.forms import RegistrationForm, UploadFileForm
 from intellectum_app.models import Student
-from intellectum_app.mws_tables_api import create_student, get_courses, get_homework_for_student, get_lessons_for_student, get_top_ups_for_student
+from intellectum_app.mws_tables_api import add_solution_file_to_homework, create_student, get_courses, get_homework_for_student, get_lessons_for_student, get_top_ups_for_student
 # Create your views here.
 
 @login_required(login_url="login")
 def home_view(request):
-    top_ups = get_top_ups_for_student(request.user.student.record_id)
     ctx = {
-        "lessons": [{
-            "name": lesson["fields"]["fldWlV2f1MwD6"],
-            "timestamp": datetime.fromtimestamp(float(lesson["fields"]["fldel098OyCPy"] / 1000)).strftime("%m/%d %H:%M"),
-            "teacher": lesson["fields"]["fldtgZIud1ueb"],
-        } for lesson in get_lessons_for_student(request.user.student.record_id)],
-        "top_ups": [{
-            "amount": top_up["fields"]["fldLwLp9iloyo"],
-            "payment_date": datetime.fromtimestamp(float(top_up["fields"]["fldyKwMfQoxC2"] / 1000)),
-            "reason": top_up["fields"]["fldizm0JJHPBk"],
-        } for top_up in top_ups],
-        "remainders": {
-            "lessons": sum(top_up["fields"]["fldVQEeC9Kb5W"] for top_up in top_ups if not top_up["fields"].get("fldpavkG8PU1T", False)),
-            "webinars": sum(top_up["fields"]["fldVQEeC9Kb5W"] for top_up in top_ups if top_up["fields"].get("fldpavkG8PU1T", False))
-        },
-        "my_courses": [{
-            "name": top_up["fields"]["fldizm0JJHPBk"],
-            "lessons_total": top_up["fields"]["fldLi57XZEtSj"],
-            "lessons_left": top_up["fields"]["fldVQEeC9Kb5W"],
-            "subject": top_up["fields"]["fldaM4OkDpvsv"],
-            "teacher": top_up["fields"]["fldv8OBSrmomJ"],
-        } for top_up in top_ups],
         "homeworks": [{
             "name": homework["fields"]["fldArS5YpMMcC"],
             "deadline": datetime.fromtimestamp(float(homework["fields"]["fldX7OYBgfiCa"] / 1000)),
             "subject": homework["fields"]["fldfTDM50MknX"],
+            "is_submitted": homework["fields"].get("fldKpDnOEwKj2", False),
+            "is_reviewed": homework["fields"].get("fldCSZcH1yrK3", False),
         } for homework in get_homework_for_student(request.user.student.record_id)]
     }
     return render(request, "home.html", context=ctx)
@@ -85,3 +65,29 @@ def courses_view(request):
     }
     return render(request, "courses.html", ctx)
 
+def assignments_view(request):
+    assignments = get_homework_for_student(request.user.student.record_id)
+    ctx = {
+        "assignments": [{
+            "name": homework["fields"]["fldArS5YpMMcC"],
+            "deadline": datetime.fromtimestamp(float(homework["fields"]["fldX7OYBgfiCa"] / 1000)),
+            "subject": homework["fields"]["fldfTDM50MknX"],
+            "text": homework["fields"]["flddYDiTNr5Yh"].split("\n"),
+            "attachments": homework["fields"]["fldnGDxeNPH3s"],
+            "id": homework["recordId"],
+            "is_submitted": homework["fields"].get("fldKpDnOEwKj2", False),
+            "mark": homework["fields"].get("fldRVEvZ8YorH", 0),
+            "is_reviewed": homework["fields"].get("fldCSZcH1yrK3", False),
+            "review": homework["fields"].get("fldZv2Jw9O2xg", "").split("\n")
+        } for homework in assignments]
+    }
+
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            # add_solution_file_to_homework(request.user.student.record_id, request.POST["id"], request.FILES["file"])
+            pass
+        else:
+            print("form invalid")
+            print(form.errors)
+    return render(request, "assignments.html", ctx)
