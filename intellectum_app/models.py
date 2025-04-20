@@ -5,5 +5,6 @@ from django.contrib.auth.models import User
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    record_id = models.CharField(max_length=13)
+    user = models.OneToOneField(User, on_delete=models.CASCADE) 
+    record_id = models.CharField()
+    phone_number = models.CharField(max_length=12)

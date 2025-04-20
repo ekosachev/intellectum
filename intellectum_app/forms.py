@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import widgets
 
 
 class RegistrationForm(UserCreationForm):
@@ -15,6 +16,12 @@ class RegistrationForm(UserCreationForm):
         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
         strip=False,
         help_text="Совпадает с паролем",
+    )
+
+    phone_number = forms.CharField(
+        label="Номер телефона",
+        widget=forms.TelInput(),
+        strip=False,
     )
 
     class Meta:
