@@ -2,13 +2,17 @@ from datetime import datetime
 from itertools import count
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 
 from intellectum_app import schemas
 from intellectum_app.forms import RegistrationForm, UploadFileForm
 from intellectum_app.models import Student
 from intellectum_app.mws_tables_api import add_solution_file_to_homework, create_student, get_courses, get_homework_for_student, get_lessons_for_student, get_top_ups_for_student
 # Create your views here.
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
 
 @login_required(login_url="login")
 def home_view(request):
@@ -49,6 +53,7 @@ def registration_view(request):
         form = RegistrationForm()
     return render(request, "auth/registration.html", {"form": form})
 
+@login_required(login_url="login")
 def courses_view(request):
     courses = get_courses()
     ctx = {
@@ -65,6 +70,7 @@ def courses_view(request):
     }
     return render(request, "courses.html", ctx)
 
+@login_required(login_url="login")
 def assignments_view(request):
     assignments = get_homework_for_student(request.user.student.record_id)
     ctx = {
