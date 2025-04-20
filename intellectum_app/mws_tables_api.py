@@ -10,6 +10,8 @@ DATASHEET_IDS = {
     "students": "dstgC1DwDVLzS0KryX",
     "lessons": "dstufz2x55j01KYBK2",
     "top_ups": "dstvtWEMyQSkTpykyG",
+    "homework": "dstKNG7XY7pAdr7LP6",
+    "courses": "dstqBysSoJQWseAAfL",
 }
 
 def add_record_to_datasheet(datasheet: str, data: list[dict]) -> dict:
@@ -53,3 +55,11 @@ def get_lessons_for_student(student_rec_id: str) -> list[dict]:
 def get_top_ups_for_student(student_rec_id: str) -> list[dict]:
     response = get_records_from_datasheet("top_ups")
     return list(filter(lambda l: student_rec_id in l["fields"]["fld7lnHxXWYC4"], response))
+
+def get_homework_for_student(student_rec_id: str) -> list[dict]:
+    response = get_records_from_datasheet("homework")
+    return list(filter(lambda h: student_rec_id in h["fields"]["fldEp1BDv27bY"], response))
+
+def get_courses() -> list[dict]:
+    return get_records_from_datasheet("courses")
+
