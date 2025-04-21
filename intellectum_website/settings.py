@@ -28,7 +28,7 @@ SECRET_KEY = getenv("DJANGO_SECRET")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(getenv("DEBUG_MODE")) if getenv("DEBUG_MODE") else False
 
-ALLOWED_HOSTS = ["intellectum-production.up.railway.app"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition

@@ -58,7 +58,7 @@ def get_top_ups_for_student(student_rec_id: str) -> list[dict]:
 
 def get_homework_for_student(student_rec_id: str) -> list[dict]:
     response = get_records_from_datasheet("homework")
-    return list(filter(lambda h: student_rec_id in h["fields"]["fldEp1BDv27bY"], response))
+    return list(filter(lambda h: student_rec_id in h["fields"].get("fldEp1BDv27bY", []), response))
 
 def get_courses() -> list[dict]:
     return get_records_from_datasheet("courses")

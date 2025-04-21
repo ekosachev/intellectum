@@ -9,8 +9,8 @@ def upcoming_lessons(request):
     ctx = {
         "lessons": [{
             "name": lesson["fields"]["fldWlV2f1MwD6"],
-            "timestamp": datetime.fromtimestamp(float(lesson["fields"]["fldel098OyCPy"] / 1000)).strftime("%m/%d %H:%M"),
-            "teacher": lesson["fields"]["fldtgZIud1ueb"],
+            "timestamp": datetime.fromtimestamp(float(lesson["fields"].get("fldel098OyCPy", [0])[0] / 1000)).strftime("%m/%d %H:%M"),
+            "teacher": lesson["fields"].get("fldtgZIud1ueb", ["Неизвестный преподаватель"]),
         } for lesson in get_lessons_for_student(request.user.student.record_id)],
     }
     return render(request, "widgets/upcoming_lessons.html", ctx)
@@ -27,8 +27,7 @@ def my_courses(request):
             "name": top_up["fields"]["fldizm0JJHPBk"],
             "lessons_total": top_up["fields"]["fldLi57XZEtSj"],
             "lessons_left": top_up["fields"]["fldVQEeC9Kb5W"],
-            "subject": top_up["fields"]["fldaM4OkDpvsv"],
-            "teacher": top_up["fields"]["fldv8OBSrmomJ"],
+            "subject": top_up["fields"].get("fldaM4OkDpvsv", "Без названия"),
         } for top_up in top_ups],
     }
 

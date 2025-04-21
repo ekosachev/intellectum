@@ -3,7 +3,6 @@
     {% for lesson in lessons %}
     <li>
       <span class="has-text-weight-bold has-text-primary">{{lesson.name}} - {{lesson.timestamp}}</span>
-      <span>(Преподаватель: {{lesson.teacher.0}})</span>
     </li>
     {% endfor %}
   </ul>

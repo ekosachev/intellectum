@@ -1,5 +1,4 @@
 from datetime import datetime
-from itertools import count
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
@@ -18,9 +17,8 @@ def logout_view(request):
 def home_view(request):
     ctx = {
         "homeworks": [{
-            "name": homework["fields"]["fldArS5YpMMcC"],
+            "name": homework["fields"].get("fldArS5YpMMcC", "Без названия"),
             "deadline": datetime.fromtimestamp(float(homework["fields"]["fldX7OYBgfiCa"] / 1000)),
-            "subject": homework["fields"]["fldfTDM50MknX"],
             "is_submitted": homework["fields"].get("fldKpDnOEwKj2", False),
             "is_reviewed": homework["fields"].get("fldCSZcH1yrK3", False),
         } for homework in get_homework_for_student(request.user.student.record_id)]
@@ -75,11 +73,11 @@ def assignments_view(request):
     assignments = get_homework_for_student(request.user.student.record_id)
     ctx = {
         "assignments": [{
-            "name": homework["fields"]["fldArS5YpMMcC"],
+            "name": homework["fields"].get("fldArS5YpMMcC", "Без названия"),
             "deadline": datetime.fromtimestamp(float(homework["fields"]["fldX7OYBgfiCa"] / 1000)),
             "subject": homework["fields"]["fldfTDM50MknX"],
-            "text": homework["fields"]["flddYDiTNr5Yh"].split("\n"),
-            "attachments": homework["fields"]["fldnGDxeNPH3s"],
+            "text": homework["fields"].get("flddYDiTNr5Yh", "Без текста").split("\n"),
+            "attachments": homework["fields"].get("fldnGDxeNPH3s", []),
             "id": homework["recordId"],
             "is_submitted": homework["fields"].get("fldKpDnOEwKj2", False),
             "mark": homework["fields"].get("fldRVEvZ8YorH", 0),

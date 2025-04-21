@@ -18,15 +18,11 @@
   <table class="table is-fullwidth is-hoverable">
     <thead>
       <th>Пакет</th>
-      <th>Предмет</th>
-      <th>Преподаватель</th>
       <th>Занятия</th>
     </thead>
     {% for course in my_courses %}
     <tr>
       <td>{{course.name.0}}</td>
-      <td>{{course.subject.0}}</td>
-      <td>{{course.teacher.0}}</td>
       <td>{{course.lessons_left}}/{{course.lessons_total.0}}</td>
     </tr>
     {% endfor %}

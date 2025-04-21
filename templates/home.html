@@ -47,7 +47,7 @@
           {% for homework in homeworks %}
             <div class="level">
               <div class="level-left has-text-primary">
-                {{homework.name}} ({{homework.subject.0}})
+                {{homework.name}}
                 {% if homework.is_submitted %}
                   {% if homework.is_reviewed %}
                     <span class="tag is-success "> Оценено </span>
